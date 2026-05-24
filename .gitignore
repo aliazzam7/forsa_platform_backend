@@ -1,0 +1,6 @@
+/vendor
+/node_modules
+.env
+uploads/cvs/*
+uploads/logos/*
+.DS_Store
