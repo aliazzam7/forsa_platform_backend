@@ -66,6 +66,10 @@ if ($uri === '/api/student/change-password' && $method === 'PUT') {
 
 //new new
 if ($uri === '/api/student/upload-avatar' && $method === 'POST') { StudentController::uploadAvatar(); exit; }
+
+// delete cv from profile student 
+if ($uri === '/api/student/cv' && $method === 'DELETE') { StudentController::deleteCV(); exit; }
+
 // ═══════════════════════════════════════════════════════════════
 //  COMPANY
 // ═══════════════════════════════════════════════════════════════

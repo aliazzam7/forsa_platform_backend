@@ -187,7 +187,6 @@ class StudentController {
             LIMIT 5
         ')->fetchAll();
 
-        // Decode skills_required لكل job
         foreach ($recentJobs as &$job) {
             $job['skills_required'] = json_decode($job['skills_required'] ?? '[]', true);
         }
@@ -238,4 +237,29 @@ class StudentController {
            ->execute([$hash, $payload['id']]);
         Response::success(null, 'Password changed successfully.');
     }
+
+    // DELETE /api/student/cv
+public static function deleteCV(): void {
+    $payload = AuthMiddleware::handle();
+    RoleMiddleware::require($payload, 'student');
+
+    $db = Database::getInstance()->getConnection();
+
+    $stmt = $db->prepare('SELECT cv_path FROM student_profiles WHERE user_id = ?');
+    $stmt->execute([$payload['id']]);
+    $row = $stmt->fetch();
+
+    if ($row && $row['cv_path']) {
+        $fullPath = __DIR__ . '/../../' . $row['cv_path'];
+        if (file_exists($fullPath)) {
+            unlink($fullPath); 
+        }
+    }
+
+    $db->prepare('UPDATE student_profiles SET cv_path = NULL WHERE user_id = ?')
+       ->execute([$payload['id']]);
+
+    Response::success(null, 'CV removed successfully.');
+}
+
 }

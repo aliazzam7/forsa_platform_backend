@@ -8,7 +8,9 @@ class ApplicationController {
         $payload = AuthMiddleware::handle();
         RoleMiddleware::require($payload, 'student');
 
-        $body = json_decode(file_get_contents('php://input'), true) ?? [];
+        $body = !empty($_FILES['cv'])
+        ? $_POST
+        : (json_decode(file_get_contents('php://input'), true) ?? []);
         $err  = Validator::required($body, ['job_id']);
         if ($err) Response::error($err);
 
